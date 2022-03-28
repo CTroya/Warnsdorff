@@ -1,5 +1,8 @@
 #include <iostream>
 #include <iomanip>
+#include <Windows.h>
+#include <io.h>
+#include <fcntl.h>
 #define ln '\n'
 using namespace std;
 int getKey() {
@@ -32,6 +35,9 @@ public:
 			}
 		}
 	}
+	int inBounds(Board board,int i, int j){
+        return ((i >= 0 && j >= 0) && (i < board.sizeI && j < board.sizeJ && board.matrix[i][j] == -1));
+    }
 	bool isFull(){
 		for(int i = 0; i < sizeI;i++){
 			for(int j = 0; j < sizeJ;j++){
@@ -39,16 +45,51 @@ public:
 			}
 		}
 	}
-	void print() {
-		for (int i = 0; i < sizeI; i++) {
-			for (int j = 0; j < sizeJ; j++)
-				if(matrix[i][j] == -1)
-					cout << '#' << setw(3);
-				else 
-					cout << matrix[i][j] << setw(3);
-			cout << ln << setw(3);
+	void print(int posicI, int posicJ) {
+		static int bruh = -1;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);	
+		cout <<"						   A:    B:    C:    D:    E:    F:    G:    H: " << ln;
+	for (int i = 0; i < 8; i++) { 
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+		for(int p = 0; p < 3;p++){
+			
+			if(p == 1){
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);
+				cout << "                                              " << i+1 <<".";
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+				for (int j = 0; j < 8; j++) {
+					((j + i) % 2) ? SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_INTENSITY | BACKGROUND_RED) :
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED | BACKGROUND_GREEN );
+			    		cout.width(4);
+						if(matrix[i][j] == -1) cout <<' ' << setw(2);
+						else if(posicI == i && posicJ == j){
+							cout.width(1);
+							cout << " |&&|";
+						}else cout << matrix[i][j] << setw(2);
+						cout <<' ';
+           			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+				}
+				cout << endl; 
+			}else{
+				cout << "						" ;
+						
+				for (int j = 0; j < 8; j++) {
+					((j + i) % 2) ? SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_INTENSITY | BACKGROUND_RED) :
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED | BACKGROUND_GREEN );
+			    		cout.width(4);
+						if(j == posicJ && i == posicI)cout <<"--" << setw(2);
+						else cout <<' ' << setw(2);
+						cout <<' ';
+           			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+				}
+				cout << endl;
+			}
 		}
-		cout << ln << setw(3);
+		
+	}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);	
+	cout << "						  		     Move:" << ++bruh << endl;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	}
 };
 class Wboard : public Board {
@@ -58,11 +99,11 @@ class Wboard : public Board {
 public:
 	int warnsdorff(int posicI, int posicJ,Board board) {
 		int jumps = 0;
-		for (int i = 0; i < 8; i++) {
-			if (posicI + moves[i][0] < 8 && posicJ + moves[i][1] < 8 && posicI + moves[i][0] >= 0 && posicJ + moves[i][1] >= 0) {
-				if (board.matrix[posicI + moves[i][0]][posicJ + moves[i][1]] == -1) jumps++;
+		if(inBounds(board,posicI,posicJ)){
+			for (int i = 0; i < 8; i++) {
+				if(inBounds(board,posicI+moves[i][0],posicJ+moves[i][1])) jumps++;
 			}
-		}
+		}else return 99;
 		return jumps;
 	}
 //Update warnsdorff's values of every cell on the board and stores them into the class's matrix
@@ -89,61 +130,98 @@ public:
     }
 	int warnsdorff(int posicI, int posicJ,Board board) {
 		int jumps = 0;
-		for (int i = 0; i < 8; i++) {
-			if (posicI + moves[i][0] < 8 && posicJ + moves[i][1] < 8 && posicI + moves[i][0] >= 0 && posicJ + moves[i][1] >= 0) {
-				if (board.matrix[posicI + moves[i][0]][posicJ + moves[i][1]] == -1) jumps++;
+		if(inBounds(board,posicI,posicJ)){
+			for (int i = 0; i < 8; i++) {
+				if(inBounds(board,posicI+moves[i][0],posicJ+moves[i][1])) jumps++;
 			}
-		}
+		}else return 99;
 		return jumps;
 	}
 //Update warnsdorff's values of every cell on the board and stores them into the class's matrix
 	void calculateWVector(Board board) {
-    int newI,newJ;
+    int newI,newJ, min_deg_idx = 9999,min_deg=69;
 	for (int i = 0; i < 8; i++) {
             newI = posicI + moves[i][0];
             newJ = posicJ + moves[i][1];
             if(inBounds(board,newI,newJ))
                 wMoves[i] = warnsdorff(newI,newJ,board);
             else
-                wMoves[i] = 9999;
+                wMoves[i] = 99;
 		}
 	}
-    void makeMove(Board board){
+    int makeMove(Board board){
 		calculateWVector(board);
-		int newI,newJ;
-        k = 9999;
+		int newI,newJ,c;
+        k = 99; int kvalue = 99;
         for(int i = 0; i < 8;i++){
-            if(k > wMoves[i]) k = i;
+			newI = posicI + moves[i][0];
+			newJ = posicJ + moves[i][1];
+			if (inBounds(board,newI,newJ) && wMoves[i] <kvalue){
+				kvalue = wMoves[i]; 
+				k = i;
+        	}
         }
-		if(k == 9999) {cout << "\naiuda no me puedo mover D:" << endl;
-			backTrack(board);
-		}else{
-			posicI = posicI + moves[k][0];
-			posicJ = posicJ + moves[k][1];
-        	board.matrix[posicI][posicJ] = moveCounter++;
+		if(kvalue == 99) {
+			return 0;
 		}
-    }
-	void backTrack(Board board){
-		board.matrix[posicI][posicJ] = -1;
-		moveCounter--;
-		for(int i = 0;i < board.sizeI;i++){
-			for(int j = 0; j < board.sizeJ; j++){
-				if(board.matrix[i][j] == moveCounter){
-					posicI = i;
-					posicJ = j;
-					break;
-				}
-			}
+		newI = posicI + moves[k][0];
+		newJ = posicJ + moves[k][1];
+        board.matrix[newI][newJ] = board.matrix[posicI][posicJ] + 1;
+		posicI = newI;
+		posicJ = newJ;
+		return 1;
+	}
+	int solveBoard(Board board){
+		for(int i = 0; i < 64;++i){
+			if(makeMove(board) == 0) return 0;
+			//board.print(posicI,posicJ);
+			board.print(posicI,posicJ);
 		}
+		
 	}
 };
+/*Printea archivos de texto
+*/
+void banner(const char* prompt) {
+    int i=0;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);
+    FILE * title;
+    int c,end;
+    int counter = 0;
+    end = 1215;
+    title = fopen(prompt, "r");
+    c = fgetc(title);
+    while (c != EOF) {
+        printf("%c", c);
+        c = fgetc(title);
+        }
+    fclose(title);
+    printf("\n");
+}
 
 int main(void) {
+	HWND console = GetConsoleWindow();
+    RECT r;
+    GetWindowRect(console, &r); //stores the console's current dimensions
+
+    MoveWindow(console, r.left, r.top, 1210, 800, TRUE); // 800 width, 100 height
+	int startPosic[2];
 	Board board(8,8);
-	board.print();
-    Horse horse(board);
-	for(int i = 0; i < 64; i++){
-		horse.makeMove(board);
-		board.print();
-	}
+	Wboard woard(8,8);
+	//board.print();
+	banner("banner.txt");
+	board.print(10,10);
+	//Cambia los colores de la consola
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_GREEN);
+	do{
+		cout << "Inserte la posicion de columnas del inicio: ";
+		cin >> startPosic[0];
+		cout << "Inserte la posicion de filas del inicio: ";
+		cin >> startPosic[1];
+	}while(!board.inBounds(board,startPosic[0],startPosic[1]));
+    Horse horse(startPosic[0],startPosic[1],board);
+	horse.solveBoard(board);
+	system("PAUSE");
+	//Resetea los colores de la consola
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 }
