@@ -13,7 +13,7 @@ public:
 
 	Board(int sizeI, int sizeJ, int initValue) : sizeI(sizeI), sizeJ(sizeJ) {
 		matrix = new  int* [sizeI];
-		for (int i = 0; i < sizeJ; i++) {
+		for (int i = 0; i < sizeI; i++) {
 			matrix[i] = new int[sizeJ];
 		}
 		for (int i = 0; i < sizeI; i++) {
@@ -33,8 +33,8 @@ public:
 			}
 		}
 	}
-	int inBounds(Board board,int i, int j){
-        return ((i >= 0 && j >= 0) && (i < board.sizeI && j < board.sizeJ && board.matrix[i][j] == -1));
+	bool inBounds(int i, int j){
+        return ((i >= 0 && j >= 0) && (i < sizeI && j < sizeJ && matrix[i][j] == -1));
     }
 	bool isFull(){
 		for(int i = 0; i < sizeI;i++){
