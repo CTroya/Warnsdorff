@@ -35,15 +35,16 @@ public:
 			}
 		}
 	}
-	int inBounds(Board board,int i, int j){
-        return ((i >= 0 && j >= 0) && (i < board.sizeI && j < board.sizeJ && board.matrix[i][j] == -1));
+	int inBounds(int i, int j){
+        return ((i >= 0 && j >= 0) && (i < sizeI && j < sizeJ && matrix[i][j] == -1));
     }
 	bool isFull(){
 		for(int i = 0; i < sizeI;i++){
 			for(int j = 0; j < sizeJ;j++){
-				
+				if(matrix[i][j]==0) return false;
 			}
 		}
+    return true;
 	}
 	void print(int posicI, int posicJ) {
 		static int bruh = -1;
@@ -99,9 +100,9 @@ class Wboard : public Board {
 public:
 	int warnsdorff(int posicI, int posicJ,Board board) {
 		int jumps = 0;
-		if(inBounds(board,posicI,posicJ)){
+		if(board.inBounds(posicI,posicJ)){
 			for (int i = 0; i < 8; i++) {
-				if(inBounds(board,posicI+moves[i][0],posicJ+moves[i][1])) jumps++;
+				if(board.inBounds(posicI+moves[i][0],posicJ+moves[i][1])) jumps++;
 			}
 		}else return 99;
 		return jumps;
@@ -125,14 +126,11 @@ public:
     int wMoves[8];
 	const int moves[8][2] = { {-2,1},{-1,2},{1,2},{2,1},{2,-1},{1,-2},{-1,-2},{-2,-1} };
 //Calculate the warnsdorff value of a specific cell determined by the function parameters
-    int inBounds(Board board,int i, int j){
-        return ((i >= 0 && j >= 0) && (i < board.sizeI && j < board.sizeJ && board.matrix[i][j] == -1));
-    }
 	int warnsdorff(int posicI, int posicJ,Board board) {
 		int jumps = 0;
-		if(inBounds(board,posicI,posicJ)){
+		if(board.inBounds(posicI,posicJ)){
 			for (int i = 0; i < 8; i++) {
-				if(inBounds(board,posicI+moves[i][0],posicJ+moves[i][1])) jumps++;
+				if(board.inBounds(posicI+moves[i][0],posicJ+moves[i][1])) jumps++;
 			}
 		}else return 99;
 		return jumps;
@@ -143,7 +141,7 @@ public:
 	for (int i = 0; i < 8; i++) {
             newI = posicI + moves[i][0];
             newJ = posicJ + moves[i][1];
-            if(inBounds(board,newI,newJ))
+            if(board.inBounds(newI,newJ))
                 wMoves[i] = warnsdorff(newI,newJ,board);
             else
                 wMoves[i] = 99;
@@ -156,7 +154,7 @@ public:
         for(int i = 0; i < 8;i++){
 			newI = posicI + moves[i][0];
 			newJ = posicJ + moves[i][1];
-			if (inBounds(board,newI,newJ) && wMoves[i] <kvalue){
+			if (board.inBounds(newI,newJ) && wMoves[i] <kvalue){
 				kvalue = wMoves[i]; 
 				k = i;
         	}
@@ -218,10 +216,11 @@ int main(void) {
 		cin >> startPosic[0];
 		cout << "Inserte la posicion de filas del inicio: ";
 		cin >> startPosic[1];
-	}while(!board.inBounds(board,startPosic[0],startPosic[1]));
+	}while(!board.inBounds(startPosic[0],startPosic[1]));
     Horse horse(startPosic[0],startPosic[1],board);
 	horse.solveBoard(board);
 	system("PAUSE");
 	//Resetea los colores de la consola
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	return 0;
 }
