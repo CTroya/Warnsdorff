@@ -1,6 +1,8 @@
+#pragma comment(lib, "winmm.lib")
 #include <iostream>
 #include <iomanip>
 #include <Windows.h>
+#include <mmsystem.h>
 #include <io.h>
 #include <fcntl.h>
 #define ln '\n'
@@ -110,6 +112,8 @@ void banner(const char* prompt) {
     printf("\n");
 }
 int main(void){
+	system("chcp 65001 < nul");
+	cout <<" " << endl;
   int M,N;
   banner("bugBanner.txt");
    do {
@@ -118,6 +122,9 @@ int main(void){
     std::cout << "Inserte el numero de columnas: ";
     std::cin >> N;
   } while (M<= 2 || M >= 41|| N <= 2 || N >= 21);
+  //PlaySound(TEXT("SystemStart"), NULL, SND_ALIAS);
+  //PlaySound(TEXT("siuuu.wav"), NULL, SND_ASYNC);  
+  mciSendString("play siuuu.wav", NULL, 0, NULL);
   Board room(M,N,0);
   srand(time(NULL));
   int moves = 0;
@@ -143,7 +150,7 @@ int main(void){
     posicJ = candidateJ;
     room.matrix[posicI][posicJ]++;
     moves++;
-    if (moves % 100 == 0)
+    if (moves % 1000 == 0)
       room.print(posicI, posicJ);
   } while (moves < 25000 && !room.isFull());
   room.print(posicI, posicJ);
@@ -154,6 +161,7 @@ int main(void){
     std::cout << "El CR7 no recorrio el cuarto en " << (int)moves
               << " pasos \n SIUUUUUUUUUUUU\n";
   }
+  banner("bugBanner.txt");
   system("PAUSE");
   return 0;
 }
