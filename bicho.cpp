@@ -13,7 +13,7 @@ class Board {
 public:
 	int** matrix;
 	int sizeI, sizeJ;
-
+  //Constructor
 	Board(int sizeI, int sizeJ, int initValue) : sizeI(sizeI), sizeJ(sizeJ) {
 		matrix = new  int* [sizeI];
 		for (int i = 0; i < sizeI; i++) {
@@ -36,9 +36,11 @@ public:
 			}
 		}
 	}
+  //Para verificar si la posicion esta dentro del tablero
 	bool inBounds(int i, int j){
         return ((i >= 0 && j >= 0) && (i < sizeI && j < sizeJ && matrix[i][j] == -1));
     }
+  //Recorre todo el tablero para verificar si esta lleno, la condicion para esto es que ninguna posicion tenga un cero.
 	bool isFull(){
 		for(int i = 0; i < sizeI;i++){
 			for(int j = 0; j < sizeJ;j++){
@@ -47,6 +49,7 @@ public:
 		}
     return true;
 	}
+  //Funcion de printeo para el tablero
 	void print(int posicI, int posicJ) {
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED | FOREGROUND_BLUE);	
 	for (int i = 0; i < sizeI; i++) { 
@@ -90,6 +93,14 @@ public:
 	}
 	cout << endl;
 	}
+
+  ~Board()//Destructor
+  {
+    for(int i = 0; i < sizeI; i++){
+			delete [] matrix[i];
+		}
+		delete[]matrix;
+  }
 };
 void banner(const char* prompt) {
     int i=0;
@@ -124,6 +135,7 @@ int main(void){
       Sleep(1);
       system("color 05");
     }
+    std::cout << "El numero de filas debe estar dentro del rango 2<=M<=41 y las columnas dentro del rango 2<=M<=21"<<endl;
     std::cout << "Inserte el numero de filas: ";
     std::cin >> M;
     std::cout << "Inserte el numero de columnas: ";
@@ -162,10 +174,10 @@ int main(void){
   } while (moves < 25000 && !room.isFull());
   room.print(posicI, posicJ);
   if (room.isFull()) {
-    std::cout << "El CR7 recorrio el cuarto en " << (int)moves
+    std::cout << "El BICHOOOOOOO recorrio el cuarto en " << (int)moves
               << " pasos \n SIUUUUUUUUUUUU\n";
   } else {
-    std::cout << "El CR7 no recorrio el cuarto en " << (int)moves
+    std::cout << "El bichito no recorrio el cuarto en " << (int)moves
               << " pasos \n SIUUUUUUUUUUUU\n";
   }
   system("Pause");
