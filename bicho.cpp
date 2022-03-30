@@ -124,7 +124,7 @@ int main(void){
   } while (M<= 2 || M >= 41|| N <= 2 || N >= 21);
   //PlaySound(TEXT("SystemStart"), NULL, SND_ALIAS);
   //PlaySound(TEXT("siuuu.wav"), NULL, SND_ASYNC);  
-  mciSendString("play siuuu.wav", NULL, 0, NULL);
+  //mciSendString("play siuuu.wav", NULL, 0, NULL);
   Board room(M,N,0);
   srand(time(NULL));
   int moves = 0;
