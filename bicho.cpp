@@ -122,7 +122,7 @@ int main(void){
      for(int i = 0; i < 4; i++){
       system("color 50");
       Sleep(1);
-      system("color 055");
+      system("color 05");
     }
     std::cout << "Inserte el numero de filas: ";
     std::cin >> M;
