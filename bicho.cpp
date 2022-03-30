@@ -182,7 +182,7 @@ int main(void){
   }
   system("Pause");
   banner("bugBanner.txt");
-  PlaySound(TEXT("siuuu.wav"),0,SND_ASYNC);
+  PlaySound(TEXT("siuuu.wav"),0,SND_SYNC);
   for(int i = 0; i < 5; i++){
     system("color 05");
     Sleep(1);
