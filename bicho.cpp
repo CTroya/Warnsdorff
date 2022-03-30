@@ -119,6 +119,11 @@ int main(void){
   banner("bugBanner.txt");
    do {
      PlaySound(TEXT("siuuu.wav"),0,SND_ASYNC);
+     for(int i = 0; i < 4; i++){
+      system("color 50");
+      Sleep(1);
+      system("color 055");
+    }
     std::cout << "Inserte el numero de filas: ";
     std::cin >> M;
     std::cout << "Inserte el numero de columnas: ";
@@ -152,7 +157,7 @@ int main(void){
     posicJ = candidateJ;
     room.matrix[posicI][posicJ]++;
     moves++;
-    if (moves % 1000 == 0)
+    if (moves % 100 == 0)
       room.print(posicI, posicJ);
   } while (moves < 25000 && !room.isFull());
   room.print(posicI, posicJ);
