@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <Windows.h>
+#include <ctime>
 #include <mmsystem.h>
 #include <io.h>
 #include <fcntl.h>
@@ -117,6 +118,7 @@ int main(void){
   int M,N;
   banner("bugBanner.txt");
    do {
+     PlaySound(TEXT("siuuu.wav"),0,SND_ASYNC);
     std::cout << "Inserte el numero de filas: ";
     std::cin >> M;
     std::cout << "Inserte el numero de columnas: ";
@@ -161,7 +163,13 @@ int main(void){
     std::cout << "El CR7 no recorrio el cuarto en " << (int)moves
               << " pasos \n SIUUUUUUUUUUUU\n";
   }
+  system("Pause");
   banner("bugBanner.txt");
-  system("PAUSE");
+  PlaySound(TEXT("siuuu.wav"),0,SND_ASYNC);
+  for(int i = 0; i < 5; i++){
+    system("color 05");
+    Sleep(1);
+    system("color 50");
+  }
   return 0;
 }

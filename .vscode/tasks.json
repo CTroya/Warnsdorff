@@ -4,12 +4,12 @@
             "type": "cppbuild",
             "label": "C/C++: g++.exe build active file",
             "command": "C:\\MinGW\\bin\\g++.exe",
-            "args": [
+            "args": [ 
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe","-lwinmm"
             ],
             "options": {
                 "cwd": "${fileDirname}"

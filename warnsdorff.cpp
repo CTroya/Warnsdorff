@@ -5,9 +5,6 @@
 #include <fcntl.h>
 #define ln '\n'
 using namespace std;
-int getKey() {
-	return rand() % 7;
-}
 class Board {
 public:
 	int** matrix;
@@ -216,7 +213,10 @@ int main(void) {
 		cin >> startPosic[0];
 		cout << "Inserte la posicion de filas del inicio: ";
 		cin >> startPosic[1];
+		startPosic[0]--;
+		startPosic[1]--;
 	}while(!board.inBounds(startPosic[0],startPosic[1]));
+	PlaySound(TEXT("galope.wav"),0,SND_ASYNC);
     Horse horse(startPosic[0],startPosic[1],board);
 	horse.solveBoard(board);
 	system("PAUSE");
